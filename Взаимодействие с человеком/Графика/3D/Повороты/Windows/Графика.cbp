@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Graphics" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/main.exe" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="bin/Debug" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add library="opengl32" />
+					<Add library="gdi32" />
+					<Add library="lib/array.a" />
+					<Add library="lib/character.a" />
+					<Add library="lib/graphics.a" />
+					<Add library="lib/OBJ parser.a" />
+					<Add library="lib/random access structure.a" />
+					<Add library="lib/stream.a" />
+					<Add library="lib/thread.a" />
+					<Add library="glu32" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/main" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Linker>
+			<Add library="opengl32" />
+			<Add library="gdi32" />
+			<Add library="lib/array.a" />
+			<Add library="lib/character.a" />
+			<Add library="lib/graphics.a" />
+			<Add library="lib/OBJ parser.a" />
+			<Add library="lib/random access structure.a" />
+			<Add library="lib/stream.a" />
+			<Add library="lib/thread.a" />
+			<Add library="lib/static model.a" />
+			<Add library="lib/input.a" />
+		</Linker>
+		<Unit filename="../src/arithmetic.c">
+			<Option compilerVar="CC" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="../src/arithmetic.h">
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="../src/extends.h" />
+		<Unit filename="../src/geometry.c">
+			<Option compilerVar="CC" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="../src/geometry.h">
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="../src/lib/OBJ parser.h" />
+		<Unit filename="../src/lib/graphics.h" />
+		<Unit filename="../src/lib/input.h" />
+		<Unit filename="../src/lib/static model.h" />
+		<Unit filename="../src/lib/thread.h" />
+		<Unit filename="../src/tests.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/translates.c">
+			<Option compilerVar="CC" />
+			<Option target="Debug" />
+		</Unit>
+		<Unit filename="../src/translates.h">
+			<Option target="Debug" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

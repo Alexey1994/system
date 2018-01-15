@@ -1,0 +1,1 @@
+XQueryPointer(linux_display, XRootWindow(linux_display, vi->screen), &dummy_win, &dummy_win, &local_mouse_x, &local_mouse_y, &dummy, &dummy, &mouse_button);

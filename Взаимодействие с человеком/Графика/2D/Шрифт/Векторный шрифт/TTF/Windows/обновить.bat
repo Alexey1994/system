@@ -1,0 +1,2 @@
+copy "..\src\TTF.h" "c:\Program Files (x86)\CodeBlocks\MinGW\include\libs\graphics\GUI\fonts\TTF\TTF.h"
+copy "bin\Debug\libmain.a" "c:\Program Files (x86)\CodeBlocks\MinGW\include\libs\graphics\GUI\fonts\TTF\TTF.a"

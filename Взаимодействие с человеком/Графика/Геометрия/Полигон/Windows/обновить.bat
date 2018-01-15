@@ -1,0 +1,5 @@
+mkdir "c:\Program Files (x86)\CodeBlocks\MinGW\include\libs\graphics"
+mkdir "c:\Program Files (x86)\CodeBlocks\MinGW\include\libs\graphics\geometry"
+mkdir "c:\Program Files (x86)\CodeBlocks\MinGW\include\libs\graphics\geometry\polygon"
+copy "..\src\polygon.h" "c:\Program Files (x86)\CodeBlocks\MinGW\include\libs\graphics\geometry\polygon\polygon.h"
+copy "..\src\polygon.c" "c:\Program Files (x86)\CodeBlocks\MinGW\include\libs\graphics\geometry\polygon\polygon.c"

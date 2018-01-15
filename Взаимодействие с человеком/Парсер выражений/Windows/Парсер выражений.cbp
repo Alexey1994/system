@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Parser" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/main" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin/Debug" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/main" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Linker>
+			<Add option="-s" />
+			<Add library="C:/Program Files (x86)/CodeBlocks/MinGW/include/libs/data structures/array/array.a" />
+			<Add library="C:/Program Files (x86)/CodeBlocks/MinGW/include/libs/stream/stream.a" />
+			<Add library="C:/Program Files (x86)/CodeBlocks/MinGW/include/libs/extends/extends.a" />
+			<Add library="C:/Program Files (x86)/CodeBlocks/MinGW/include/libs/error/error.a" />
+			<Add library="C:/Program Files (x86)/CodeBlocks/MinGW/include/libs/data structures/random access structure/random access structure.a" />
+			<Add library="C:/Program Files (x86)/CodeBlocks/MinGW/include/libs/data structures/character/character.a" />
+		</Linker>
+		<Unit filename="../src/tests.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

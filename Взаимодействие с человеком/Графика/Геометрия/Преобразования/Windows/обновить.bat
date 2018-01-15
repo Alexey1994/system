@@ -1,0 +1,5 @@
+mkdir "c:\Program Files (x86)\CodeBlocks\MinGW\include\libs\graphics"
+mkdir "c:\Program Files (x86)\CodeBlocks\MinGW\include\libs\graphics\geometry"
+mkdir "c:\Program Files (x86)\CodeBlocks\MinGW\include\libs\graphics\geometry\transformation"
+copy "..\src\transformation.h" "c:\Program Files (x86)\CodeBlocks\MinGW\include\libs\graphics\geometry\transformation\transformation.h"
+copy "..\src\transformation.c" "c:\Program Files (x86)\CodeBlocks\MinGW\include\libs\graphics\geometry\transformation\transformation.c"
