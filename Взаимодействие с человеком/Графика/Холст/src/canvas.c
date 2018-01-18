@@ -9,7 +9,7 @@ procedure initialize_canvas (Canvas *canvas, N_32 width, N_32 height, N_8 bytes_
 
 procedure deinitialize_canvas (Canvas *canvas)
 {
-	free(canvas->data);
+	free_memory(canvas->data);
 }
 
 
@@ -24,7 +24,7 @@ function Canvas* create_canvas (N_32 width, N_32 height, N_8 bytes_per_pixel)
 procedure destroy_canvas (Canvas *canvas)
 {
 	deinitialize_canvas(canvas);
-	free(canvas);
+	free_memory(canvas);
 }
 
 
@@ -47,7 +47,7 @@ function Byte* get_canvas_pixel (Canvas *canvas, N_32 x, N_32 y)
 	return canvas->data + (canvas->width * y + x) * canvas->bytes_per_pixel;
 }
 
-
+/*
 function Byte* get_percentage_canvas_pixel (Canvas *canvas, R_32 x_percents, R_32 y_percents)
 {
 	N_32 x;
@@ -69,7 +69,7 @@ function Byte* get_percentage_canvas_pixel (Canvas *canvas, R_32 x_percents, R_3
 	y = y_percents * (R_32)canvas->height;
 
 	return get_canvas_pixel(canvas, x, y);
-}
+}*/
 
 
 procedure set_canvas_color (Canvas *canvas, Byte r, Byte g, Byte b, Byte alpha)

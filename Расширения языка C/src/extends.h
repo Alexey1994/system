@@ -34,8 +34,6 @@ typedef struct
 Dynamic_Data;
 
 
-//function Byte* malloc(N_32 length);//del
-
 #include <system/interfaces/memory/memory.h>
 
 

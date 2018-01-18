@@ -1,4 +1,4 @@
-function Boolean initialize_TCP_connection (TCP_Connection *connection, Byte *host, N_16 port)
+private function Boolean initialize_TCP_connection (TCP_Connection *connection, Byte *host, N_16 port)
 {
     Windows_Socket_Address_Info  address_info;
     Host_Data                   *host_data;
@@ -25,12 +25,11 @@ function Boolean initialize_TCP_connection (TCP_Connection *connection, Byte *ho
         goto error;
 
     is_non_blocking_mode = 1;
-    printf("ioctlsocket status %d\n", ioctlsocket(connection->socket, NON_BLOCKING_MODE, &is_non_blocking_mode));
+    ioctlsocket(connection->socket, NON_BLOCKING_MODE, &is_non_blocking_mode);
 
     while(!connect(connection->socket, &address_info, sizeof(Windows_Socket_Address_Info)))
-    {//printf("error socket\n");
-        //closesocket(connection->socket);
-        //goto error;
+    {
+
     }
 
     return 1;
@@ -40,21 +39,10 @@ error:
 }
 
 
-procedure deinitialize_TCP_connection (TCP_Connection *connection)
+private procedure destroy_TCP_connection (TCP_Connection *connection)
 {
     closesocket(connection->socket);
-}
-
-
-procedure write_in_TCP_connection (TCP_Connection *connection, Byte *data, N_32 length_data)
-{
-	send(connection->socket, data, length_data, 0);
-}
-
-
-procedure read_from_TCP_connection (TCP_Connection *connection, Byte *data, N_32 length_data)
-{
-	recv(connection->socket, data, length_data, 0);
+    free_memory(connection);
 }
 
 
@@ -74,11 +62,8 @@ private function Byte read_byte_from_TCP_Connection(TCP_Connection *connection)
             if(data_length > 0)
                 break;
 
-            //printf("lock input\n");
             sleep_thread(1);
         }
-
-        //printf("get %d bytes\n", data_length);
 
         connection->input_buffer.end_index = data_length;
         connection->input_buffer.begin_index = 0;
@@ -98,7 +83,7 @@ private function write_byte_in_TCP_Connection(TCP_Connection *connection, Byte b
 {
     while(buffer_length(&connection->input_buffer) || buffer_length(&connection->output_buffer) == connection->output_buffer.reserve || connection->output_locked)
     {
-        //printf("lock output [%d, %d, %d]\n", buffer_length(&connection->input_buffer), buffer_length(&connection->output_buffer) == connection->output_buffer.reserve, connection->output_locked);
+
     }
 
     write_in_buffer(&connection->output_buffer, byte);
@@ -112,7 +97,6 @@ private procedure listen_TCP_Connection_output(TCP_Connection *connection)
         if(connection->output_buffer.end_index)
         {
             send(connection->socket, connection->output_buffer.data, connection->output_buffer.reserve, 0);
-            //printf("send\n");
             connection->output_buffer.end_index = 0;
         }
 
@@ -124,7 +108,7 @@ private procedure listen_TCP_Connection_output(TCP_Connection *connection)
 }
 
 
-procedure initialize_TCP_Connection_input_output(TCP_Connection *connection, Input *input, Output *output)
+private procedure initialize_TCP_Connection_input_output_from_connection(TCP_Connection *connection, Input *input, Output *output)
 {
     initialize_buffer(&connection->input_buffer, 4096);
     initialize_input(input, connection, &read_byte_from_TCP_Connection, &is_end_of_TCP_Connection_data);
@@ -133,4 +117,22 @@ procedure initialize_TCP_Connection_input_output(TCP_Connection *connection, Inp
     initialize_output(output, connection, &write_byte_in_TCP_Connection);
 
     connection->output_listener_ID = run_thread(&listen_TCP_Connection_output, connection);
+}
+
+
+function Boolean initialize_TCP_Connection_input_output(Byte *host, N_16 port, Input *input, Output *output)
+{
+    TCP_Connection *connection;
+
+    connection = new(TCP_Connection);
+
+    if(!initialize_TCP_connection(connection, host, port))
+        goto error;
+
+    initialize_TCP_Connection_input_output_from_connection(connection, input, output);
+
+    return 1;
+
+error:
+    return 0;
 }

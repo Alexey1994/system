@@ -1,5 +1,7 @@
-#include <windows.h>
-#include <system/devices/mouse/mouse.h>
+#include <x86 32 bit.h>
+//#include <windows.h>
+
+//#include <system/devices/mouse/mouse.h>
 #include "graphics.h"
 
 
@@ -33,12 +35,14 @@ procedure draw_rectangle(Rectangle *rectangle, Canvas *canvas)
 procedure draw_scene(Canvas *canvas)
 {
     Rectangle rect;
+    static N_32 x = 0;
+    static N_32 y = 0;
 
-    rect.x = get_mouse_coord_x();
-    rect.y = get_mouse_coord_y();
+    rect.x = 10 + x;//get_mouse_coord_x();
+    rect.y = 10;//get_mouse_coord_y();
     rect.width = 100;
     rect.height = 100;
-
+++x;
     clear_canvas(canvas);
     set_canvas_color(canvas, 255, 0, 0, 255);
     draw_rectangle(&rect, canvas);
@@ -47,7 +51,7 @@ procedure draw_scene(Canvas *canvas)
 
 N_32 main()
 {
-    initialize_graphics(1440, 900, 120, draw_scene);
+    initialize_graphics(1440, 900, 120, &draw_scene);
 
     return 0;
 }

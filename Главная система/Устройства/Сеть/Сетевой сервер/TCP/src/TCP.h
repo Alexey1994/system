@@ -21,7 +21,7 @@ Server* create_TCP_server(
     Byte           *host,
     unsigned short  port,
     N_32            maximum_connections,
-    int           (*run_on_request)(Network_Source source, Byte *arguments),
+    int           (*run_on_request)(Input *input, Output *output, Byte *arguments),
     Byte           *request_arguments
 );
 

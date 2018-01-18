@@ -11,7 +11,7 @@ procedure listen_server(TCP_Connection *connection)
 
     Input  input;
     Output output;
-
+/*
     initialize_TCP_Connection_input_output(connection, &input, &output);
 
     for(;;)
@@ -38,7 +38,7 @@ procedure listen_server(TCP_Connection *connection)
 
         write_null_terminated_byte_array(&output, "Hi!");
         write_byte(&output, 0);
-    }
+    }*/
 }
 
 
@@ -56,7 +56,7 @@ N_32 main()
 
     initialize_TCP_server(&server, "127.0.0.1", 80, 10000, &listen_server, 0);
     initialize_TCP_connection(&connection, "127.0.0.1", 80);
-    initialize_TCP_Connection_input_output(&connection, &input, &output);
+    initialize_TCP_Connection_input_output("127.0.0.1", 80, &input, &output);
 
     for(;;)
     {

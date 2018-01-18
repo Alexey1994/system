@@ -13,6 +13,15 @@ procedure print_finded_PCI_device(PCI_Device *device)
 }
 
 
+typedef struct
+{
+    Byte blue;
+    Byte green;
+    Byte red;
+}
+Pixel;
+
+
 N_32 main()
 {
     
@@ -25,6 +34,14 @@ N_32 main()
     }*/
 
     find_PCI_devices(&print_finded_PCI_device);
+
+    N_32  *video_address = 0x7E00 + 0x28;
+    Pixel *screen        = *video_address;
+
+    N_32 i;
+
+    for(i=0; i<640 * 480; ++i)
+        screen[i].red = i;
 
     return 0;
 }
