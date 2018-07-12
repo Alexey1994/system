@@ -6,6 +6,7 @@
 #define WHDR_BEGINLOOP      4
 #define MM_WOM_DONE         0x3BD
 
+#define PCM_WAVE_FORMAT     1
 
 typedef struct
 {
@@ -42,7 +43,6 @@ typedef struct
     Windows_Sound_Buffer  buffer1;
     Windows_Sound_Buffer  buffer2;
     N_32                  current_buffer_index;
-    Boolean               read_data;
 }
 Sound_Data;
 

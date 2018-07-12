@@ -4,5 +4,9 @@
 
 N_32 main()
 {
+    Input input;
+
+    //initialize_input(&input, )
+
     return 0;
 }

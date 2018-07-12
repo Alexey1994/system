@@ -1,29 +1,24 @@
-private procedure play(Byte *sound_device, N_32 uMsg, Sound_Data *data, N_32 *dwParam1, N_32 *dwParam2)
+private stdcall procedure play(Byte *sound_device, N_32 uMsg, Sound_Data *data, N_32 *dwParam1, N_32 *dwParam2)
 {
+    Windows_Sound_Buffer *current_buffer;
+
     if(uMsg == MM_WOM_DONE)
     {
-        data->read_data = 1;
+        if(data->current_buffer_index)
+            current_buffer = &data->buffer2;
+        else
+            current_buffer = &data->buffer1;
 
-        Windows_Sound_Buffer *current_buffer;
+        waveOutWrite(sound_device, current_buffer, sizeof(Windows_Sound_Buffer));
+        data->current_buffer_index = !data->current_buffer_index;
 
-            data->read_data = 0;
+        if(data->current_buffer_index)
+            current_buffer = &data->buffer2;
+        else
+            current_buffer = &data->buffer1;
 
-            if(data->current_buffer_index)
-                current_buffer = &data->buffer2;
-            else
-                current_buffer = &data->buffer1;
-
-            waveOutWrite(sound_device, current_buffer, sizeof(Windows_Sound_Buffer));
-            data->current_buffer_index = !data->current_buffer_index;
-
-            if(data->current_buffer_index)
-                current_buffer = &data->buffer2;
-            else
-                current_buffer = &data->buffer1;
-
-            read_byte_array(data->input, current_buffer->data, current_buffer->buffer_length);
-
-            waveOutWrite(sound_device, current_buffer, sizeof(Windows_Sound_Buffer));
+        read_byte_array(data->input, current_buffer->data, current_buffer->buffer_length);
+        waveOutWrite(sound_device, current_buffer, sizeof(Windows_Sound_Buffer));
     }
 }
 
@@ -34,8 +29,7 @@ procedure play_sound(Input *input)
     Byte                 *sound_device;
     Windows_Sound_Format  sound_format;
 
-
-    sound_format.format                       = 1;
+    sound_format.format                       = PCM_WAVE_FORMAT;
     sound_format.number_of_channels           = 2;
     sound_format.samples_per_seconds          = 44100;
     sound_format.bits_per_sample              = 16;
@@ -47,8 +41,6 @@ procedure play_sound(Input *input)
         return 0;
 
     data.input                  = input;
-
-    data.read_data              = 0;
     data.current_buffer_index   = 1;
 
     data.buffer1.data           = data.buffer1_data;
@@ -70,8 +62,4 @@ procedure play_sound(Input *input)
     read_byte_array(data.input, data.buffer2.data, data.buffer2.buffer_length);
 
     waveOutWrite(sound_device, &data.buffer1, sizeof(Windows_Sound_Buffer));
-
-    for(;;){
-        sleep(1);
-    }
 }
