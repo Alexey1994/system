@@ -2,12 +2,14 @@ procedure initialize_output (Output *output, Byte *source, procedure (*write_byt
 {
     output->source     = source;
     output->write_byte = write_byte;
+    output->deinitialize_source = 0;
 }
 
 
 procedure deinitialize_output (Output *output)
 {
-
+    if(output->deinitialize_source)
+        output->deinitialize_source(output->source);
 }
 
 
@@ -81,4 +83,57 @@ procedure write_binary_N_16 (Output *output, N_16 number)
 procedure write_binary_N_8 (Output *output, N_8 number)
 {
     write_byte_array(output, &number, 1);
+}
+
+
+procedure write_binary_R_32 (Output *output, R_32 number)
+{
+    write_byte_array(output, &number, 4);
+}
+
+
+private procedure write_hex_character (Output *output, Character character)
+{
+    if(character < 10)
+        write_byte(output, character + '0');
+    else
+        write_byte(output, character - 10 + 'A');
+}
+
+
+private procedure write_hex_byte (Output *output, Byte byte)
+{
+    if(byte < 16)
+    {
+        write_byte(output, '0');
+        write_hex_character(output, byte);
+    }
+    else
+    {
+        write_hex_character(output, byte >> 4);
+        write_hex_character(output, byte & 0b00001111);
+    }
+}
+
+
+procedure write_hex_array (Output *output, Byte *array, N_32 length)
+{
+    N_32 i;
+
+    for(i=0; i<length; ++i)
+        write_hex_byte(output, array[i]);
+}
+
+
+procedure write_hex_N_16 (Output *output, N_16 number)
+{
+    convert_little_to_big_endian(&number, 2);
+    write_hex_array(output, &number, 2);
+}
+
+
+procedure write_hex_N_32 (Output *output, N_32 number)
+{
+    convert_little_to_big_endian(&number, 4);
+    write_hex_array(output, &number, 4);
 }

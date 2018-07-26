@@ -136,6 +136,22 @@ function N_32 read_binary_N_32 (Input *input)
 }
 
 
+function N_32 read_N_32 (Input *input)
+{
+    N_32 number;
+
+    number = 0;
+
+    while(is_number(input_head(input)) && !end_of_input(input))
+    {
+        number = number*10 + input_head(input) - '0';
+        read_byte(input);
+    }
+
+    return number;
+}
+
+
 procedure skip_input_spaces (Input *input)
 {
     while(!end_of_input(input) && is_space(input_head(input)))

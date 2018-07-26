@@ -1,0 +1,10 @@
+
+f:\Программирование\Пакеты2\Математика\Геометрия\Точка\Windows>mkdir "C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\ATI Technologies\ATI.ACE\Core-Static;C:\Program Files\nodejs\;C:\Users\lex\AppData\Roaming\npm;C:\adb;C:\Users\lex\AppData\Local\bin\NASM;C:\Program Files\Git\cmd;C:\Users\lex\AppData\Roaming\npm\include\mathematic\geometry\point" 
+
+f:\Программирование\Пакеты2\Математика\Геометрия\Точка\Windows>copy "..\src\point.h" "C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\ATI Technologies\ATI.ACE\Core-Static;C:\Program Files\nodejs\;C:\Users\lex\AppData\Roaming\npm;C:\adb;C:\Users\lex\AppData\Local\bin\NASM;C:\Program Files\Git\cmd;C:\Users\lex\AppData\Roaming\npm\include\mathematic\geometry\point\point.h" 
+Скопировано файлов:         0.
+
+f:\Программирование\Пакеты2\Математика\Геометрия\Точка\Windows>copy "..\src\point.c" "C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\ATI Technologies\ATI.ACE\Core-Static;C:\Program Files\nodejs\;C:\Users\lex\AppData\Roaming\npm;C:\adb;C:\Users\lex\AppData\Local\bin\NASM;C:\Program Files\Git\cmd;C:\Users\lex\AppData\Roaming\npm\include\mathematic\geometry\point\point.c" 
+Скопировано файлов:         0.
+
+f:\Программирование\Пакеты2\Математика\Геометрия\Точка\Windows>exit

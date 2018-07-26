@@ -66,7 +66,7 @@ procedure write_in_buffer(Buffer *buffer, Byte byte)
     if(buffer->end_index >= buffer->reserve)
     {
         Byte *old_data      = buffer->data;
-        N_32  old_data_size = buffer->reserve
+        N_32  old_data_size = buffer->reserve;
         N_32  i;
 
         buffer->reserve *= 2;

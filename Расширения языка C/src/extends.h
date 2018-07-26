@@ -43,6 +43,8 @@ Dynamic_Data;
 //#define reallocate(data, type)                data=reallocate_memory(data, sizeof(type))
 //#define reallocate_array(data, type, length)  data=reallocate_memory(data, sizeof(type)*length)
 
+procedure copy_memory             (Byte *data1, Byte *data2, N_32 length);
+
 procedure initialize_dynamic_data (Dynamic_Data *dynamic_data, Byte *data, Byte type);
 procedure revert_bytes_order      (Byte *array, N_32 length);
 procedure swap                    (Byte *element1, Byte *element2, N_32 length);

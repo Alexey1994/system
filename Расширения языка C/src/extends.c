@@ -3,6 +3,15 @@
 #endif
 
 
+procedure copy_memory (Byte *data1, Byte *data2, N_32 length)
+{
+    N_32 i;
+
+    for(i=0; i<length; ++i)
+        data1[i] = data2[i];
+}
+
+
 procedure initialize_dynamic_data (Dynamic_Data *dynamic_data, Byte *data, Byte type)
 {
     dynamic_data->data = data;

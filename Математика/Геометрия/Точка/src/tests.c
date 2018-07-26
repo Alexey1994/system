@@ -19,7 +19,7 @@ int main()
 
     //printf("%d", sizeof(point));
     initialize_point_3D(&point, 1, 2, 3);
-    printf("%d (%f, %f, %f)\n", point.length, point.x, point.y, point.z);
+    //printf("%d (%f, %f, %f)\n", point.length, point.x, point.y, point.z);
     initialize_graphics(1440, 900, 60, &draw);
 
     for(;;);

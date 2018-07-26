@@ -1,14 +1,3 @@
-function Array* create_array(N_32 reserve, procedure (*destroy_node)(Byte *node))
-{
-    Array *array;
-
-    array = new(Array);
-    initialize_array(array, reserve, destroy_node);
-
-    return array;
-}
-
-
 private procedure free_array_data(Array *array)
 {
     N_32        i;
@@ -22,13 +11,6 @@ private procedure free_array_data(Array *array)
 
     for(i=0; i<length; i++)
         destroy_node(data[i]);
-}
-
-
-procedure destroy_array(Array *array)
-{
-    deinitialize_array(array);
-    free_memory(array);
 }
 
 
@@ -48,6 +30,12 @@ procedure deinitialize_array (Array *array)
         free_array_data(array);
 
     free_memory(array->data);
+}
+
+
+procedure clear_array (Array *array)
+{
+    array->length = 0;
 }
 
 
@@ -100,55 +88,8 @@ function Byte* array_data(Array *array, N_32 index)
 
 procedure crawl_array(Array *array, procedure (*crawl_func)(Byte *node))
 {
-    N_32   i;
-    Byte **data;
-    N_32   length;
+    N_32 i;
 
-    data = array->data;
-    length = array->length;
-
-    for(i=0; i<length; ++i)
-        crawl_func(data[i]);
-}
-
-
-private function Byte* get_array_structure_element(Random_Access_Structure *structure, N_32 pos)
-{
-    Array *array;
-
-    array = structure->structure;
-
-    if(pos >= array->length)
-    {
-        //printf("out of range in array (length of array is %d)\n", array->length);
-        goto error;
-    }
-
-    return array->data[pos];
-
-error:
-    //printf("error in get_array_structure_element\n");
-    //printf("out of range in array (length of array is %d)\n", array->length);
-
-    return 0;
-}
-
-
-private function N_32 get_array_structure_length(Random_Access_Structure *structure)
-{
-    Array *array = structure->structure;
-    return array->length;
-}
-
-
-function Random_Access_Structure* create_array_structure(Array *array)
-{
-    return create_random_access_structure(array, get_array_structure_element, get_array_structure_length);
-}
-
-
-procedure destroy_array_structure(Random_Access_Structure *structure)
-{
-    destroy_random_access_structure(structure);
-    destroy_array(structure->structure);
+    for(i=0; i<array->length; ++i)
+        crawl_func(array->data[i]);
 }

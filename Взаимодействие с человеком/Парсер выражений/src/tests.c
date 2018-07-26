@@ -1,7 +1,7 @@
-#include <stdio.h>
+#include <windows.h>
 #include "expression parser.h"
 
-
+/*
 #define BINARY_PLUS 0
 #define BINARY_MUL  1
 
@@ -101,6 +101,43 @@ int main()
     print_expression_in_postfix_notation(expression, get_operations_translator(), print_operand);
 
     fclose(input_file);
+
+    return 0;
+}
+*/
+
+#include <system/interfaces/files/files.h>
+
+
+function N_32 parse_number(Input *input)
+{
+    return read_N_32(input);
+}
+
+
+function Z_32 main()
+{
+    Input             input;
+    Array             expression;
+    Expression_Parser parser;
+
+    initialize_file_input(&input, "a.txt");
+    initialize_array(&expression, 1, 0);
+
+    initialize_Expression_Parser(&parser, &parse_number, 0);
+        add_unary_operation(&parser, "-", 0);
+
+        add_binary_operation(&parser, "+", 1, 4);
+
+        if(parse_expression(&parser, &input, &expression))
+        {
+            //printf("%d\n", expression.length);
+            print_expression_in_postfix_notation(&parser, &expression);
+        }
+        else
+            printf("error\n");
+    
+    deinitialize_Expression_Parser(&parser);
 
     return 0;
 }

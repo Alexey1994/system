@@ -1,8 +1,8 @@
-mkdir "%path%\include\system\interfaces\files\Windows"
+mkdir "%path%\include\system\interfaces\file\Windows"
 
-copy "..\src\files.h" "%path%\include\system\interfaces\files\files.h"
-copy "..\src\files.c" "%path%\include\system\interfaces\files\files.c"
-copy "..\src\Windows\Windows.h" "%path%\include\system\interfaces\files\Windows\Windows.h"
-copy "..\src\Windows\Windows.c" "%path%\include\system\interfaces\files\Windows\Windows.c"
+copy "..\src\file.h" "%path%\include\system\interfaces\file\file.h"
+copy "..\src\file.c" "%path%\include\system\interfaces\file\file.c"
+copy "..\src\Windows\Windows.h" "%path%\include\system\interfaces\file\Windows\Windows.h"
+copy "..\src\Windows\Windows.c" "%path%\include\system\interfaces\file\Windows\Windows.c"
 
 exit

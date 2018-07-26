@@ -46,3 +46,30 @@ error:
     free(file_source);
     return 0;
 }
+
+
+private procedure write_byte_in_file (Windows_File *file, Byte byte)
+{
+    N_32 bytes_writed;
+
+    WriteFile(file, &byte, 1, &bytes_writed, 0);
+}
+
+
+function Boolean initialize_file_output (Output *file_output, Character *path)
+{
+    Windows_File *file_source;
+
+    file_source = CreateFileA(path, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+
+    if(file_source < 0)
+        goto error;
+
+    initialize_output(file_output, file_source, &write_byte_in_file);
+    file_output->deinitialize_source = &CloseHandle;
+
+    return 1;
+
+error:
+    return 0;
+}

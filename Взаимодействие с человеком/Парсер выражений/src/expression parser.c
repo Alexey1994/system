@@ -1,178 +1,261 @@
-static void destroy_expression_data()
+private procedure destroy_expression_data()
 {
 
 }
 
 
-static Boolean stack_contains_open_brace(Array *stack)
+private function Boolean stack_contains_open_brace(Array *stack)
 {
-    int    i=stack->length-1;
-    char **data=stack->data;
+    Z_32 i;
 
-    for(; i>=0; i--)
-        if(data[i] == OPEN_BRACE)
+    for(i = stack->length - 1; i >= 0; --i)
+        if(stack->data[i] == OPEN_BRACE)
             return 1;
 
     return 0;
 }
 
 
-Array* parse_expression_in_infix_notation(Stream *input_stream,
-                                          Array  *unary_operations,
-                                          Array  *binary_operations,
-                                          int    *binary_priorities,
-                                          Byte   *language_parser,
-                                          Byte* (*get_operand)(Byte *language_parser))
+procedure initialize_Expression_Parser (
+    Expression_Parser *parser,
+    function Byte* (*parse_operand)(Input *input),
+    procedure (*destroy_opernad)(Byte *operand)
+)
 {
-    Array     *stack              = create_array(4, 0);
-    Array     *expression         = create_array(4, destroy_expression_data);
-    Boolean    is_expression      = 1;
-    Boolean    is_operation       = 0;
-    Boolean    is_close_brace     = 0;
-    Boolean    is_unary_operation;
-    Byte       operation_number;
-    Operation *operation;
-    Byte      *operand;
-    int        i;
+    initialize_array(&parser->stack, 1, 0);
+    initialize_array(&parser->unary_operations, 1, 0);
+    initialize_array(&parser->binary_operations, 1, 0);
 
-    while(!end_stream(input_stream) && is_expression)
-    {
-        if(!is_close_brace)
-        {
-            do
-            {
-                is_unary_operation = 0;
-                skip_text_stream(input_stream);
+    parser->parse_operand   = parse_operand;
+    parser->destroy_opernad = destroy_opernad;
+}
 
-                for(i=0; i<unary_operations->length; i++)
-                {
-                    operation = unary_operations->data[i];
 
-                    if(read_if_on_stream_head(input_stream, operation->name))
-                    {
-                        push_in_array(expression, create_dynamic_data(operation->number, UNARY_OPERATION));
-                        is_unary_operation=1;
-                        break;
-                    }
+private function Unary_Operation* create_unary_operation(Character *name, N_32 number)
+{
+    Unary_Operation *operation;
 
-                    skip_text_stream(input_stream);
-                }
-            }
-            while(is_unary_operation);
-        }
+    operation = new(Unary_Operation);
 
-        if(input_stream->head!='(' && !is_close_brace)
-        {
-            operand = get_operand(language_parser);
+    operation->name   = name;
+    operation->number = number;
 
-            if(!operand)
-                goto error;
+    return operation;
+}
 
-            push_in_array(expression, create_dynamic_data(operand, OPERAND));
-            is_operation=0;
-        }
 
-        switch(input_stream->head)
-        {
-        case '(':
-            push_in_array(stack, OPEN_BRACE);
-            get_stream_byte(input_stream);
+private procedure destroy_unary_operation(Unary_Operation *operation)
+{
+    free(operation);
+}
 
-            is_operation=1;
-            is_close_brace=0;
-            break;
 
-        case ')':
-            if(!stack_contains_open_brace(stack))
-            {
-                is_expression=0;
-                break;
-            }
+private function Binary_Operation* create_binary_operation(Character *name, N_32 number, Z_32 priority)
+{
+    Binary_Operation *operation;
 
-            if(get_array_top(stack) == OPEN_BRACE)
-            {
-                print_error("braces without expression\n");
-                goto error;
-            }
+    operation = new(Binary_Operation);
 
-            do
-            {
-                if(!stack->length)
-                {
-                    printf("expected (\n");
-                    goto error;
-                }
+    operation->name     = name;
+    operation->number   = number;
+    operation->priority = priority;
 
-                push_in_array(expression, create_dynamic_data(pop_from_array(stack), BINARY_OPERATION));
-            }
-            while(get_array_top(stack) != OPEN_BRACE);
+    return operation;
+}
 
-            pop_from_array(stack);
-            get_stream_byte(input_stream);
 
-            is_operation = 0;
-            is_close_brace = 1;
-            break;
+private procedure destroy_binary_operation(Binary_Operation *operation)
+{
+    free(operation);
+}
 
-        default:
-            is_expression = 0;
 
-            for(i=0; i<binary_operations->length; i++)
-            {
-                operation = binary_operations->data[i];
+procedure add_unary_operation (Expression_Parser *parser, Character *text, N_32 code)
+{
+    add_in_array(&parser->unary_operations, create_unary_operation(text, code));
+}
 
-                if(read_if_on_stream_head(input_stream, operation->name))
-                {
-                    if(is_operation)
-                    {
-                        print_error("2 operations without operand\n");
-                        goto error;
-                    }
 
-                    while(stack->length && binary_priorities[(int)get_array_top(stack)] >= binary_priorities[(int)operation->number])
-                        push_in_array(expression, create_dynamic_data(pop_from_array(stack), BINARY_OPERATION));
+procedure add_binary_operation (Expression_Parser *parser, Character *text, N_32 code, N_32 priority)
+{
+    add_in_array(&parser->binary_operations, create_binary_operation(text, code, priority));
+}
 
-                    push_in_array(stack, operation->number);
 
-                    is_operation=1;
-                    is_close_brace=0;
-                    is_expression=1;
-                }
-            }
-        }
+procedure deinitialize_Expression_Parser (Expression_Parser *parser)
+{
+    deinitialize_array(&parser->stack);
+    deinitialize_array(&parser->unary_operations);
+    deinitialize_array(&parser->binary_operations);
+}
 
-        skip_text_stream(input_stream);
-    }
 
-    while(stack->length)
-    {
-        operation_number = pop_from_array(stack);
+private function N_32 binary_operation_priority(Expression_Parser *parser, N_32 operation_number)
+{
+    N_32 i;
 
-        if(operation_number == OPEN_BRACE)
-        {
-            print_error("expected )\n");
-            goto error;
-        }
+    for(i=0; i<parser->binary_operations.length; ++i)
+        if(((Binary_Operation*)parser->binary_operations.data[i])->number == operation_number)
+            return ((Binary_Operation*)parser->binary_operations.data[i])->priority;
 
-        push_in_array(expression, create_dynamic_data(operation_number, BINARY_OPERATION));
-    }
-
-    destroy_array(stack);
-    return expression;
-
-error:
-    destroy_array(stack);
-    destroy_array(expression);
     return 0;
 }
 
 
-void print_expression_in_postfix_notation(Array *expression,
-                                          Character **operations_translator,
-                                          void(*print_operand)(Byte *operand))
+function Boolean parse_expression(Expression_Parser *parser, Input *input, Array *expression)
 {
-    int          i;
-    DynamicData *expression_node;
+    N_32              i;
+    Unary_Operation  *current_unary_operation;
+    Binary_Operation *current_binary_operation;
+    Dynamic_Data     *dynamic_data;
+    Byte             *operand;
+    Boolean           is_expression;
+    Boolean           is_operation;
+    Boolean           is_close_brace;
+
+    is_expression  = 1;
+    is_operation   = 0;
+    is_close_brace = 0;
+
+    clear_array(&parser->stack);
+    skip_input_spaces(input);
+
+    while(!end_of_input(input) && is_expression)
+    {
+        if(!is_close_brace)
+        {
+            next_unary_operation:
+                skip_input_spaces(input);
+
+                if(end_of_input(input))
+                    break;
+
+                for(i=0; i<parser->unary_operations.length; ++i)
+                {
+                    current_unary_operation = parser->unary_operations.data[i];
+
+                    if(read_if_next(input, current_unary_operation->name))
+                    {
+                        dynamic_data = new(Dynamic_Data);
+                        initialize_dynamic_data(dynamic_data, current_unary_operation, UNARY_OPERATION);
+                        add_in_array(expression, dynamic_data);
+                        goto next_unary_operation;
+                    }
+                }
+
+            if(input_head(input) != '(')
+            {
+                operand = parser->parse_operand(input);
+
+                if(!operand)
+                    goto error;
+
+                dynamic_data = new(Dynamic_Data);
+                initialize_dynamic_data(dynamic_data, operand, OPERAND);
+                add_in_array(expression, dynamic_data);
+                is_operation = 0;
+            }
+        }
+
+        skip_input_spaces(input);
+
+        switch(input_head(input))
+        {
+            case '(':
+                add_in_array(&parser->stack, OPEN_BRACE);
+                read_byte(input);
+
+                is_operation = 1;
+                is_close_brace = 0;
+                break;
+
+            case ')':
+                if(!stack_contains_open_brace(&parser->stack))
+                {
+                    is_expression = 0;
+                    break;
+                }
+
+                if(array_top(&parser->stack) == OPEN_BRACE)
+                    goto error;
+
+                do
+                {
+                    if(!parser->stack.length)
+                        goto error;
+
+                    dynamic_data = new(Dynamic_Data);
+                    initialize_dynamic_data(dynamic_data, delete_from_array_top(&parser->stack), BINARY_OPERATION);
+                    add_in_array(expression, dynamic_data);
+                }
+                while(array_top(&parser->stack) != OPEN_BRACE);
+
+                delete_from_array_top(&parser->stack);
+                read_byte(input);
+
+                is_operation = 0;
+                is_close_brace = 1;
+                break;
+
+            default:
+                is_expression = 0;
+
+                for(i=0; i<parser->binary_operations.length; ++i)
+                {
+                    current_binary_operation = parser->binary_operations.data[i];
+
+                    if(read_if_next(input, current_binary_operation->name))
+                    {
+                        if(is_operation)
+                            goto error;
+
+                        while(
+                            parser->stack.length && array_top(&parser->stack) != OPEN_BRACE &&
+                            ((Binary_Operation*)array_top(&parser->stack))->priority >= current_binary_operation->priority
+                        )
+                        {
+                            dynamic_data = new(Dynamic_Data);
+                            initialize_dynamic_data(dynamic_data, delete_from_array_top(&parser->stack), BINARY_OPERATION);
+                            add_in_array(expression, dynamic_data);
+                        }
+
+                        add_in_array(&parser->stack, current_binary_operation);
+
+                        is_operation = 1;
+                        is_close_brace = 0;
+                        is_expression = 1;
+                    }
+                }
+        }
+
+        skip_input_spaces(input);
+    }
+
+    while(parser->stack.length)
+    {
+        current_binary_operation = delete_from_array_top(&parser->stack);
+
+        if(current_binary_operation == OPEN_BRACE)
+            goto error;
+
+        dynamic_data = new(Dynamic_Data);
+        initialize_dynamic_data(dynamic_data, current_binary_operation, BINARY_OPERATION);
+        add_in_array(expression, dynamic_data);
+    }
+
+    return 1;
+
+error:
+    return 0;
+}
+
+
+void print_expression_in_postfix_notation(Expression_Parser *parser, Array *expression)
+{
+    int               i;
+    Dynamic_Data     *expression_node;
+    Binary_Operation *binary_operation;
+    Unary_Operation  *unary_operation;
 
     for(i=0; i<expression->length; i++)
     {
@@ -181,15 +264,17 @@ void print_expression_in_postfix_notation(Array *expression,
         switch(expression_node->type)
         {
         case BINARY_OPERATION:
-            printf("%s", operations_translator[(int)expression_node->data]);
+            binary_operation = expression_node->data;
+            printf("%s ", binary_operation->name);
             break;
 
         case UNARY_OPERATION:
-            printf("%s", operations_translator[(int)expression_node->data]);
+            unary_operation = expression_node->data;
+            printf("%s ", unary_operation->name);
             break;
 
         case OPERAND:
-            print_operand(expression_node->data);
+            printf("%d ", expression_node->data);
             break;
         }
     }

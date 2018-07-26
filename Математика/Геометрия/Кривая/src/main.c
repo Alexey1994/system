@@ -4,13 +4,7 @@
 #include <system/devices/mouse/mouse.h>
 
 
-Curve    curve;
-Array    points;
-Point_2D point1;
-Point_2D point2;
-Point_2D point3;
-Point_2D point4;
-Point_2D point5;
+Curve curve;
 
 
 procedure draw(Canvas *canvas)
@@ -23,24 +17,17 @@ procedure draw(Canvas *canvas)
 
 function N_32 main()
 {
-    initialize_array(&points, 2, 0);
+    Point point;
 
-    initialize_point_2D(&point1, 0, 0);
-    add_in_array(&points, &point1);
+    initialize_curve(&curve);
+        initialize_point_2D(&point, 0, 0);
+        add_point_in_curve(&curve, &point);
 
-    initialize_point_2D(&point2, 200, 200);
-    add_in_array(&points, &point2);
+        initialize_point_2D(&point, 100, 100);
+        add_point_in_curve(&curve, &point);
 
-    initialize_point_2D(&point3, 400, 0);
-    add_in_array(&points, &point3);
-
-    initialize_point_2D(&point4, 500, 200);
-    add_in_array(&points, &point4);
-
-    initialize_point_2D(&point5, 1000, 0);
-    add_in_array(&points, &point5);
-
-    initialize_curve(&curve, &points);
+        initialize_point_2D(&point, 200, 0);
+        add_point_in_curve(&curve, &point);
 
     initialize_graphics(1440, 900, 60, &draw);
 

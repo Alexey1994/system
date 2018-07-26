@@ -11,6 +11,7 @@ typedef struct
 {
     Byte       *source;
     procedure (*write_byte)(Byte *source, Byte byte);
+    procedure (*deinitialize_source)(Byte *source);
 }
 Output;
 
@@ -27,6 +28,11 @@ procedure write_null_terminated_byte_array (Output *output, Byte *data);
 procedure write_binary_N_32                (Output *output, N_32 number);
 procedure write_binary_N_16                (Output *output, N_16 number);
 procedure write_binary_N_8                 (Output *output, N_8 number);
+procedure write_binary_R_32                (Output *output, R_32 number);
+
+procedure write_hex_array                  (Output *output, Byte *array, N_32 length);
+procedure write_hex_N_16                   (Output *output, N_16 number);
+procedure write_hex_N_32                   (Output *output, N_32 number);
 
 
 #include "output.c"
