@@ -34,8 +34,8 @@ function N_32 main ()
         write_PE(&pe_output, &pe);
         deinitialize_output(&pe_output);
 
-    end_PE(&pe);
     deinitialize_PE_export_section(&pe);
+    end_PE(&pe);
 
     return 0;
 }

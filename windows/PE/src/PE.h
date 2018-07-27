@@ -34,6 +34,7 @@ typedef struct
 
     struct
     {
+        N_32   address;
         Buffer section;
         Output section_output;
         Input  section_input;

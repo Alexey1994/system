@@ -31,6 +31,9 @@ procedure add_section_in_PE (PE *pe, Byte *name, N_32 size, N_32 address, N_32 a
 {
     PE_Section section;
 
+    if(size % 512)
+        size = (size / 512 + 1) * 512;
+
     initialize_PE_section_name(section.name, name);
     section.address     = address;
     section.size        = size;
@@ -68,6 +71,8 @@ procedure initialize_PE_export_section(PE *pe)
 
 begin_PE_export_section(PE *pe, N_32 address)
 {
+    pe->export_section.address = address;
+
     pe->data_directories[0].address = address;
     pe->data_directories[0].size = 0;
 }
@@ -75,7 +80,37 @@ begin_PE_export_section(PE *pe, N_32 address)
 
 end_PE_export_section(PE *pe)
 {
-    
+    write_binary_N_32(&pe->export_section.section_output, 0);
+    write_binary_N_32(&pe->export_section.section_output, 0);      //timestamp
+    write_binary_N_32(&pe->export_section.section_output, 0);      //version
+    write_binary_N_32(&pe->export_section.section_output, 0x2000 + 40); //name ASCIIZ address
+    write_binary_N_32(&pe->export_section.section_output, 1);      //Начальный номер экспортируемых символов (больше или равен 1).
+    write_binary_N_32(&pe->export_section.section_output, 2);      //Количество элементов в таблице адресов.
+    write_binary_N_32(&pe->export_section.section_output, 2);      //Количество элементов в таблице имен и таблице номеров.
+    write_binary_N_32(&pe->export_section.section_output, 0x2000 + 48); //RVA таблицы адресов.
+    write_binary_N_32(&pe->export_section.section_output, 0x2000 + 56); //RVA таблицы имен.
+    write_binary_N_32(&pe->export_section.section_output, 0x2080 + 64); //RVA таблицы номеров.
+//0x2000 + 40
+    write_null_terminated_byte_array(&pe->export_section.section_output, "Hi.exe");
+    write_byte(&pe->export_section.section_output, '\0');
+    write_byte(&pe->export_section.section_output, '\0');
+//0x2000 + 48
+    write_binary_N_32(&pe->export_section.section_output, 0x1000);      //адрес1
+    write_binary_N_32(&pe->export_section.section_output, 0x1001);      //адрес2
+
+    write_binary_N_32(&pe->export_section.section_output, 0x2000 + 68); //адрес имени1
+    write_binary_N_32(&pe->export_section.section_output, 0x2000 + 80); //адрес имени2
+
+    write_binary_N_16(&pe->export_section.section_output, 1);           //номер1
+    write_binary_N_16(&pe->export_section.section_output, 2);           //номер2
+//0x2000 + 68
+    write_null_terminated_byte_array(&pe->export_section.section_output, "funtanische"); //имя1
+    write_byte(&pe->export_section.section_output, '\0');
+//0x2000 + 80
+    write_null_terminated_byte_array(&pe->export_section.section_output, "tada");        //имя2
+    write_byte(&pe->export_section.section_output, '\0');
+
+    add_section_in_PE (pe, "Export", buffer_length(&pe->export_section.section), pe->export_section.address, 0xC0300040, &pe->export_section.section_input);
 }
 
 
@@ -140,6 +175,9 @@ private function N_32 calculate_PE_image_size (PE *pe, N_32 number_of_sections)
             image_size = current_section->address + current_section->size;
     }
 
+    if(image_size % 4096)
+        image_size = (image_size / 4096 + 1) * 4096;
+
     return image_size;
 }
 
@@ -154,7 +192,7 @@ private procedure write_optional_PE_header (Output *output, PE *pe, N_32 number_
     write_binary_N_32(output, 0);                           //size of uninitialized data
     write_binary_N_32(output, 0x00001000);                  //address of entry point
     write_binary_N_32(output, 0x00001000);                  //base of code
-    write_binary_N_32(output, 0x00002000);                  //base of data
+    write_binary_N_32(output, 0x00000000);                  //base of data
     write_binary_N_32(output, 0x00010000);                  //image base
 
     write_binary_N_32(output, 4096);                        //section alignment

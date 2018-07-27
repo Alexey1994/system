@@ -54,7 +54,7 @@ JSON json(a, b) : (c, d)
 
 Output File file("a.txt")
 
-JSON json(file):
+JSON(file):
     ->Number:
         ->0
         ->1
