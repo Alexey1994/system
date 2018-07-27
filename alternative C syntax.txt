@@ -1,0 +1,60 @@
+struct JSON {
+    
+}
+
+JSON        json
+JSON_Number number
+
+initialize_JSON(&json, a, b)
+
+begin_JSON(&json, c, d)
+    initialize_number(&number, aa, bb)
+    
+    begin_number(&number, cc, dd)
+        add_bit_in_number(&number, 0)
+        add_bit_in_number(&number, 1)
+    end_number(&number)
+
+    add_field_in_JSON(&json, &number)
+    deinitialize_number(&number)
+end_JSON(&json)
+
+deinitialize_JSON(&json)
+
+/////////////////////////////////////////////////
+
+JSON json(a, b)
+{(c, d)
+    JSON_Number number(aa, bb)
+    {(cc, dd)
+        ->0
+        ->1
+    }
+
+    ->number
+}
+
+JSON json(a, b)
+{(c, d)
+    ->JSON_Number(aa, bb)
+    {(cc, dd)
+        ->0
+        ->1
+    }
+}
+
+/////////////////////////////////////////////////
+
+JSON json(a, b) : (c, d)
+    ->JSON_Number(aa, bb) : (cc, dd)
+        ->0
+        ->1
+
+/////////////////////////////////////////////////
+
+Output File file("a.txt")
+
+JSON json(file):
+    ->Number:
+        ->0
+        ->1

@@ -24,7 +24,22 @@ PE_Type;
 typedef struct
 {
     Machine machine;
-    //N_16    number_of_sections;
+
+    struct
+    {
+        N_32 address;
+        N_32 size;
+    }
+    data_directories[16];
+
+    struct
+    {
+        Buffer section;
+        Output section_output;
+        Input  section_input;
+    }
+    export_section;
+
     Buffer  sections;
     Output  sections_output;
 }
